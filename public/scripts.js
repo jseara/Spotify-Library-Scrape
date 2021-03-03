@@ -37,15 +37,18 @@
 
  function runScrape()
  {
-   var fetchTracks = function (albumId, callback) {
-    $.ajax({
-        url: 'https://api.spotify.com/v1/' + token + 'tracks/?market=US&limit=1',
-        success: function (response) {
-            callback(response);
-        }
-    });
-};
+   // Send HTTP Get request with token, parameters
+   const HTTP = new XMLHttpRequest();
+   const url = 'https://api.spotify.com/v1/' + token + '/tracks/?market=US&limit=1'
+   HTTP.open("GET", url);
+   HTTP.send();
 
+   //This should output the json?
+   HTTP.onreadystatechange = (e) => {
+     console.log(HTTP.responseText)
+   }
+
+   //Test to make sure token was passed successfully
    if (token != null)
    {
      alert(token);
@@ -53,6 +56,7 @@
    else {alert("boop");}
  }
 
+ //Code taken directly from Spotify API tutorial, honestly still need to learn how it works. It seems kinda... messy? Just like it's calling things all over the place.
  function runOnStart()
  {
    var stateKey = 'spotify_auth_state';
@@ -104,12 +108,14 @@
      document.getElementById('login-button').addEventListener('click', function()
      {
 
+       //SET CLIENT_ID AND REDIRECT HERE.
        var client_id = 'dea932aee6d04a5187ab1fccc20c40bd'; // Your client id
        var redirect_uri = 'http://localhost:8888/'; // Your redirect uri
 
        var state = generateRandomString(16);
 
        localStorage.setItem(stateKey, state);
+       //SET REQUESTED PERMISSIONS HERE
        var scope = 'user-read-private user-read-email';
 
        var url = 'https://accounts.spotify.com/authorize';
