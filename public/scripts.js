@@ -54,17 +54,16 @@
    if (token)
    {
       $.ajax({
-        url: 'https://api.spotify.com/v1/me/' + token,
-        method: 'GET',
-        dataType: 'json',
-        data: {
-
-        },
+        url: 'https://api.spotify.com/v1/me/tracks',
+        type: 'GET',
         headers: {
-          "Authorization": 'Bearer ' + token
+          'Authorization' : 'Bearer ' + token
         },
-        //success: console.log("Fuck")
-        })
+        success: function(data)
+        {
+          console.log(data);
+        }
+      });
    }
 
 
@@ -145,7 +144,7 @@
 
        localStorage.setItem(stateKey, state);
        //SET REQUESTED PERMISSIONS HERE
-       var scope = 'user-read-private user-read-email';
+       var scope = 'user-read-private user-read-email user-library-read';
 
        var url = 'https://accounts.spotify.com/authorize';
        url += '?response_type=token';
