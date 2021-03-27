@@ -1,13 +1,3 @@
-// var SpotifyWebApi = require('spotify-web-api-node');
-//
-// var spotifyApi = new SpotifyWebApi({
-//   clientId: 'dea932aee6d04a5187ab1fccc20c40bd',
-//   clientSecret: '',
-//   redirectUri: 'http://localhost:8888'
-// });
-
-//spotifyApi.authorizationCodeGrant( )
-
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -49,41 +39,78 @@
 
  function runScrape()
  {
+   console.log("Scrape initiated...");
    // Send HTTP Get request with token, parameters
    const HTTP = new XMLHttpRequest();
    if (token)
    {
-      $.ajax({
-        url: 'https://api.spotify.com/v1/me/tracks',
-        type: 'GET',
-        headers: {
-          'Authorization' : 'Bearer ' + token
-        },
-        success: function(data)
-        {
-          console.log(data);
-        }
-      });
+     console.log("Token is valid, write initiated...");
+     var writeComplete = true;
+     var jsonFinal = [{}];
+
+    // while (writeComplete = true)
+     //{
+
+       $.ajax({
+         url: 'https://api.spotify.com/v1/me/tracks?limit=50',
+         type: 'GET',
+         headers: {
+           'Authorization' : 'Bearer ' + token
+         },
+         success: function(data)
+         {
+           console.log("Write in progress...");
+           console.log(data);
+           //jsonFinal.push(data);
+           $.extend(jsonFinal, data);
+           //jsonFinal = jsonFinal.concat(data);
+           console.log(Object.keys(jsonFinal).length);
+           if (Object.keys(data).length < 50)
+           {
+             console.log("Complete");
+             writeComplete = false;
+             downloadObjectAsJson(jsonFinal, "test");
+           }
+         }
+       });
+     //}
+
+     //Check for directory existence, if not, create.
+     // const dir = './data';
+     // if (!fs.existsSync(dir))
+     // {
+     //   fs.mkdirSync(dir,
+     //     {
+     //       recursive: true
+     //     });
+     //   }
+     //
+     //   //Write jsonFinal to file.
+     //   // TODO: Check for existence of file, if exists, copy old file to jsonOld write new to jsonNew. Save with dates??
+     //   fs.writeFile(dir+'/test.txt', jsonFinal, function(err)
+     //   {
+     //     if (err) {
+     //       console.log(err);
+     //     }
+     //   });
+
+
+
+     }
+     else (console.log("Token not defined."))
    }
 
-
-   const url = 'https://api.spotify.com/v1/' + token + '/tracks/?market=US&limit=1'
-   //HTTP.open("GET", url);
-   //HTTP.send();
-
-   //This should output the json?
-   HTTP.onreadystatechange = (e) => {
-     console.log(HTTP.responseText)
-   }
-
-   //Test to make sure token was passed successfully
-   if (token != null)
-   {
-     alert(token);
-   }
-   else {alert("boop");}
+ //TODO: Test to ensure file is not undefined or empty
+ function downloadObjectAsJson(exportObj, exportName)
+ {
+   var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+   var downloadAnchorNode = document.createElement('a');
+   downloadAnchorNode.setAttribute("href",     dataStr);
+   downloadAnchorNode.setAttribute("download", exportName + ".json");
+   document.body.appendChild(downloadAnchorNode); // required for firefox
+   downloadAnchorNode.click();
+   downloadAnchorNode.remove();
  }
-
  //Code taken directly from Spotify API tutorial, honestly still need to learn how it works. It seems kinda... messy? Just like it's calling things all over the place.
  function runOnStart()
  {
