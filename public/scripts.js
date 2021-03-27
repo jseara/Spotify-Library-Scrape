@@ -1,3 +1,13 @@
+// var SpotifyWebApi = require('spotify-web-api-node');
+//
+// var spotifyApi = new SpotifyWebApi({
+//   clientId: 'dea932aee6d04a5187ab1fccc20c40bd',
+//   clientSecret: '',
+//   redirectUri: 'http://localhost:8888'
+// });
+
+//spotifyApi.authorizationCodeGrant( )
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -5,6 +15,8 @@
  */
 
  var token;
+ const app = {};
+ app.apiUrl = 'https://api.spotify.com/v1'
 
  function generateRandomString(length)
  {
@@ -39,9 +51,26 @@
  {
    // Send HTTP Get request with token, parameters
    const HTTP = new XMLHttpRequest();
+   if (token)
+   {
+      $.ajax({
+        url: 'https://api.spotify.com/v1/me/' + token,
+        method: 'GET',
+        dataType: 'json',
+        data: {
+
+        },
+        headers: {
+          "Authorization": 'Bearer ' + token
+        },
+        //success: console.log("Fuck")
+        })
+   }
+
+
    const url = 'https://api.spotify.com/v1/' + token + '/tracks/?market=US&limit=1'
-   HTTP.open("GET", url);
-   HTTP.send();
+   //HTTP.open("GET", url);
+   //HTTP.send();
 
    //This should output the json?
    HTTP.onreadystatechange = (e) => {
@@ -84,7 +113,7 @@
    else {
      localStorage.removeItem(stateKey);
      if (access_token)
-     {
+     {1
        $.ajax({
            url: 'https://api.spotify.com/v1/me',
            headers: {
